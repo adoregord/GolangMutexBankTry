@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	runtime.GOMAXPROCS(2)
+	runtime.GOMAXPROCS(5)
 
 	var wg sync.WaitGroup
 

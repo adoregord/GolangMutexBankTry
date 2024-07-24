@@ -29,30 +29,28 @@ func (repo UserRepo) CreateUser(user *domain.User) domain.User {
 }
 
 func (repo UserRepo) Deposit(userId int, amount float64, wg *sync.WaitGroup) error {
-	defer wg.Done()
+	defer func() {
+		repo.MUTEK.Unlock()
+		wg.Done()
+	}()
 	repo.MUTEK.Lock()
-	defer repo.MUTEK.Unlock()
 	user1 := repo.User[userId]
-	user1.MUTEK.Lock()
-	defer user1.MUTEK.Unlock()
-	// var user1 domain.User
 
 	user1.Balance += amount
 	repo.User[userId] = user1
-	fmt.Println("Deposit: ",  
-	repo.User[userId].Balance, user1)
+	fmt.Println("Deposit: ",
+		repo.User[userId].Balance, user1)
 	return nil
 
 }
 
 func (repo UserRepo) Withdraw(userId int, amount float64, wg *sync.WaitGroup) error {
-	defer wg.Done()
+	defer func() {
+		repo.MUTEK.Unlock()
+		wg.Done()
+	}()
 	repo.MUTEK.Lock()
-	defer repo.MUTEK.Unlock()
 	user1 := repo.User[userId]
-	user1.MUTEK.Lock()
-	defer user1.MUTEK.Unlock()
-	// var user1 domain.User
 
 	user1.Balance -= amount
 	repo.User[userId] = user1
